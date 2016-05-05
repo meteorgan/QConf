@@ -87,7 +87,7 @@ static void signal_forward(int sig)
 
 int check_proc_exist(const string &pid_file, int &pid_fd)
 {
-    pid_fd = open(pid_file.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0644);
+    pid_fd = open(pid_file.c_str(), O_RDWR | O_CREAT, 0644);
     if (-1 == pid_fd) return QCONF_ERR_OPEN;
 
     int ret = lockf(pid_fd, F_TLOCK, 0);
@@ -101,7 +101,8 @@ void write_pid(int fd, pid_t chd_pid)
     char buf[32] = {0};
 
     snprintf(buf, sizeof(buf), "%d", chd_pid);
-    lseek(fd, 0, SEEK_SET);
+    ftruncate(fd, 0);
+    //lseek(fd, 0, SEEK_SET);
     write(fd, buf, strlen(buf));
 }
 
